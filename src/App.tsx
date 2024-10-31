@@ -3,12 +3,14 @@ import { PlusCircle, MoreHorizontal, Search, Zap, ArrowDownUp, Maximize2 } from 
 import TableCell from './components/TableCell';
 import ColumnMenu from './components/ColumnMenu';
 import { CellType, TableData, Column } from './types';
+import ViewOptionsMenu from './components/ViewOptionsMenu';
 
 function App() {
   const [columns, setColumns] = useState<Column[]>([
     { id: '1', name: 'Name', type: 'text' }
   ]);
   const [tableData, setTableData] = useState<TableData>([[{ type: 'text', content: '' }]]);
+  const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
 
   const addRow = () => {
     setTableData([...tableData, columns.map(col => ({ type: col.type, content: '' }))]);
@@ -103,9 +105,18 @@ function App() {
               <button className="p-1.5 hover:bg-gray-100 rounded-md">
                 <Maximize2 size={18} className="text-gray-500" />
               </button>
-              <button className="p-1.5 hover:bg-gray-100 rounded-md">
-                <MoreHorizontal size={18} className="text-gray-500" />
-              </button>
+              <div className="relative">
+                <button 
+                  className="p-1.5 hover:bg-gray-100 rounded-md"
+                  onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
+                >
+                  <MoreHorizontal size={18} className="text-gray-500" />
+                </button>
+                <ViewOptionsMenu 
+                  isOpen={isViewMenuOpen}
+                  onClose={() => setIsViewMenuOpen(false)}
+                />
+              </div>
               <button className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
                 New
               </button>
