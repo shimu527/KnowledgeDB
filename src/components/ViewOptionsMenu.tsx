@@ -17,10 +17,12 @@ import {
 interface ViewOptionsMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onImportSQLite: (file: File) => void;
 }
 
-const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({ isOpen, onClose }) => {
+const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({ isOpen, onClose, onImportSQLite }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,6 +34,18 @@ const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({ isOpen, onClose }) =>
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onImportSQLite(file);
+      onClose();
+    }
+  };
+
+  const handleSourceClick = () => {
+    fileInputRef.current?.click();
+  };
 
   if (!isOpen) return null;
 
@@ -55,7 +69,19 @@ const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({ isOpen, onClose }) =>
 
       <div className="h-px bg-gray-200 my-1" />
 
-      <MenuItem icon={<FileText size={16} />} label="Source" value="Untitled" />
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept=".sqlite,.db,.sqlite3,.db3"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+      <MenuItem 
+        icon={<FileText size={16} />} 
+        label="Source" 
+        value="Untitled"
+        onClick={handleSourceClick} 
+      />
       <MenuItem icon={<Layout size={16} />} label="Layout" value="Table" />
       <MenuItem icon={<ListFilter size={16} />} label="Properties" value="2 shown" />
       <MenuItem icon={<ListFilter size={16} />} label="Filter" value="None" />
@@ -92,8 +118,21 @@ const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({ isOpen, onClose }) =>
   );
 };
 
-const MenuItem = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-  <button className="w-full px-3 py-2 text-sm text-left hover:bg-gray-50 flex items-center">
+const MenuItem = ({ 
+  icon, 
+  label, 
+  value,
+  onClick 
+}: { 
+  icon: React.ReactNode; 
+  label: string; 
+  value: string;
+  onClick?: () => void;
+}) => (
+  <button 
+    className="w-full px-3 py-2 text-sm text-left hover:bg-gray-50 flex items-center"
+    onClick={onClick}
+  >
     <span className="text-gray-400 w-6">{icon}</span>
     <span className="flex-1">{label}</span>
     <span className="text-gray-500">{value}</span>

@@ -71,10 +71,10 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
   return (
     <div className="relative" ref={menuRef}>
       <div 
-        className="flex items-center gap-1 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer group min-w-[200px]"
+        className="flex items-center gap-1 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer group"
         onClick={() => setIsOpen(true)}
       >
-        <span className="flex-1 text-left text-sm text-gray-600">{name}</span>
+        <span className="flex-1 text-left text-sm text-gray-600 truncate">{name}</span>
         <ChevronDown size={14} className="flex-shrink-0 text-gray-400 opacity-0 group-hover:opacity-100" />
       </div>
 

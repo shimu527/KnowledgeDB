@@ -4,6 +4,7 @@ import TableCell from './components/TableCell';
 import ColumnMenu from './components/ColumnMenu';
 import { CellType, TableData, Column } from './types';
 import ViewOptionsMenu from './components/ViewOptionsMenu';
+import initSqlJs from 'sql.js';
 
 function App() {
   const [columns, setColumns] = useState<Column[]>([
@@ -82,6 +83,70 @@ function App() {
     ));
   };
 
+  const handleImportSQLite = async (file: File) => {
+    try {
+      console.log('开始导入文件:', file.name);
+      
+      // 初始化 SQL.js，注意这里使用 await
+      const SQL = await initSqlJs({
+        // 确保 sql-wasm.wasm 文件可以被正确加载
+        locateFile: file => `https://sql.js.org/dist/${file}`
+      });
+      
+      // 读取文件内容
+      const fileBuffer = await file.arrayBuffer();
+      const db = new SQL.Database(new Uint8Array(fileBuffer));
+      
+      // 获取所有表名
+      const tables = db.exec(`
+        SELECT name 
+        FROM sqlite_master 
+        WHERE type='table' AND name NOT LIKE 'sqlite_%'
+      `);
+      
+      if (!tables || !tables[0] || !tables[0].values.length) {
+        alert('未在SQLite文件中找到任何表');
+        return;
+      }
+
+      // 获取第一个表名
+      const firstTableName = tables[0].values[0][0] as string;
+      
+      // 获取表数据
+      const result = db.exec(`SELECT * FROM "${firstTableName}" LIMIT 1000`);
+      
+      if (!result || !result[0]) {
+        alert('无法读取表数据');
+        return;
+      }
+
+      const { columns, values } = result[0];
+
+      // 转换列定义
+      const newColumns: Column[] = columns.map((colName, index) => ({
+        id: `col-${index + 1}`,
+        name: colName as string,
+        type: 'text'
+      }));
+
+      // 转换数据
+      const newData: TableData = values.map(row => 
+        row.map(cellValue => ({
+          type: 'text',
+          content: cellValue !== null ? String(cellValue) : ''
+        }))
+      );
+
+      // 更新状态
+      setColumns(newColumns);
+      setTableData(newData);
+      
+    } catch (error) {
+      console.error('导入过程错误:', error);
+      alert(`导入失败: ${error instanceof Error ? error.message : '未知错误'}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Notion-style header */}
@@ -115,6 +180,7 @@ function App() {
                 <ViewOptionsMenu 
                   isOpen={isViewMenuOpen}
                   onClose={() => setIsViewMenuOpen(false)}
+                  onImportSQLite={handleImportSQLite}
                 />
               </div>
               <button className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
