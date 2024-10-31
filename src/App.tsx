@@ -192,23 +192,6 @@ function App() {
       </div>
 
       <div className="max-w-[90%] mx-auto py-6 px-4">
-        <div className="mb-4 flex gap-2">
-          <button
-            onClick={addRow}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors"
-          >
-            <PlusCircle size={16} />
-            Add Row
-          </button>
-          <button
-            onClick={addColumn}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors"
-          >
-            <PlusCircle size={16} />
-            Add Column
-          </button>
-        </div>
-
         <div className="overflow-x-auto rounded-lg border border-gray-200 min-h-[600px]">
           <table className="w-full h-full border-collapse bg-white">
             <thead>
@@ -226,6 +209,14 @@ function App() {
                     />
                   </th>
                 ))}
+                <th className="border-b border-gray-200 p-2 w-10">
+                  <button
+                    onClick={addColumn}
+                    className="p-1.5 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600"
+                  >
+                    <PlusCircle size={16} />
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -255,6 +246,14 @@ function App() {
             </tbody>
           </table>
         </div>
+        {/* 在表格下方添加新建行按钮 */}
+        <button
+          onClick={addRow}
+          className="mt-2 flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded-md transition-colors w-full"
+        >
+          <PlusCircle size={16} />
+          <span>New page</span>
+        </button>
       </div>
     </div>
   );
