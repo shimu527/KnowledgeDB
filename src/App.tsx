@@ -132,8 +132,8 @@ function App() {
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded-lg border border-gray-200">
-          <table className="min-w-full border-collapse bg-white table-fixed">
+        <div className="overflow-x-auto rounded-lg border border-gray-200 min-h-[600px]">
+          <table className="w-full h-full border-collapse bg-white">
             <thead>
               <tr className="bg-gray-50">
                 {columns.map((column, colIndex) => (
