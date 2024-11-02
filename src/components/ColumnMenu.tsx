@@ -11,7 +11,15 @@ import {
   Filter,
   Bot,
   Type,
-  Info
+  Info,
+  Hash,
+  Calculator,
+  Code2,
+  FileText,
+  Tags,
+  ListChecks,
+  Calendar,
+  Link2
 } from 'lucide-react';
 import { CellType } from '../types';
 
@@ -24,6 +32,50 @@ interface ColumnMenuProps {
   onNameChange: (name: string) => void;
   canDelete: boolean;
 }
+
+interface TypeConfig {
+  label: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+}
+
+const typeConfigs: Record<CellType, TypeConfig> = {
+  text: {
+    label: 'Text',
+    icon: Type
+  },
+  number: {
+    label: 'Number',
+    icon: Calculator
+  },
+  latex: {
+    label: 'LaTeX',
+    icon: Hash
+  },
+  markdown: {
+    label: 'Markdown',
+    icon: FileText
+  },
+  code: {
+    label: 'Code',
+    icon: Code2
+  },
+  select: {
+    label: 'Select',
+    icon: Tags
+  },
+  multiSelect: {
+    label: 'Multi-select',
+    icon: ListChecks
+  },
+  date: {
+    label: 'Date',
+    icon: Calendar
+  },
+  url: {
+    label: 'URL',
+    icon: Link2
+  }
+};
 
 const ColumnMenu: React.FC<ColumnMenuProps> = ({
   type,
@@ -60,13 +112,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
     }
   }, [isOpen]);
 
-  const typeLabels: Record<CellType, string> = {
-    text: 'Text',
-    number: 'Number',
-    latex: 'LaTeX',
-    markdown: 'Markdown',
-    code: 'Code'
-  };
+  const typeLabels: Record<CellType, string> = Object.fromEntries(
+    Object.entries(typeConfigs).map(([key, config]) => [key, config.label])
+  );
 
   return (
     <div className="relative" ref={menuRef}>
@@ -188,7 +236,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
           className="absolute z-20 top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1"
         >
           <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase">Property Type</div>
-          {Object.entries(typeLabels).map(([value, label]) => (
+          {Object.entries(typeConfigs).map(([value, config]) => (
             <button
               key={value}
               onClick={() => {
@@ -199,7 +247,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 type === value ? 'text-blue-600 bg-blue-50 hover:bg-blue-50' : ''
               }`}
             >
-              {label}
+              <config.icon size={14} className="text-gray-400" />
+              {config.label}
               {type === value && (
                 <span className="ml-auto text-blue-600">✓</span>
               )}

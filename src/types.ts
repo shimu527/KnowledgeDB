@@ -1,4 +1,13 @@
-export type CellType = 'text' | 'latex' | 'code' | 'number' | 'markdown';
+export type CellType = 
+  | 'text' 
+  | 'number' 
+  | 'latex' 
+  | 'markdown' 
+  | 'code'
+  | 'select'
+  | 'multiSelect'
+  | 'date'
+  | 'url';
 
 export interface Cell {
   type: CellType;
