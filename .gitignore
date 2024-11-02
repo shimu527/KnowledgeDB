@@ -26,6 +26,3 @@ dist-ssr
 # SQLite
 *.sqlite
 *.db
-
-# markdown
-README.md
