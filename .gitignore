@@ -27,3 +27,5 @@ dist-ssr
 *.sqlite
 *.db
 
+# markdown
+README.md
