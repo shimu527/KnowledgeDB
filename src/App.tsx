@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusCircle, MoreHorizontal, Search, Zap, ArrowDownUp, Maximize2 } from 'lucide-react';
 import TableCell from './components/TableCell';
 import ColumnMenu from './components/ColumnMenu';
@@ -146,6 +146,25 @@ function App() {
       alert(`导入失败: ${error instanceof Error ? error.message : '未知错误'}`);
     }
   };
+
+  useEffect(() => {
+    const loadDefaultDatabase = async () => {
+      try {
+        const response = await fetch('data.sqlite');
+        if (response.ok) {
+          const file = await response.blob();
+          const fileObject = new File([file], 'data.sqlite');
+          await handleImportSQLite(fileObject);
+        } else {
+          console.error('data.sqlite not found');
+        }
+      } catch (error) {
+        console.error('Error loading default database:', error);
+      }
+    };
+
+    loadDefaultDatabase();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
